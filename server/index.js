@@ -1,16 +1,23 @@
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
 app.use(express.json());
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('BansosWatch API');
+const userRoutes = require("./routes/user");
+const laporanRoutes = require("./routes/laporan");
+const { errorHandler } = require("./middlewares/errorHandler");
+const authenticate = require("./middlewares/auth");
+
+app.get("/", (req, res) => {
+  res.send("BansosWatch API");
 });
 
-// Start server
+app.use("/user", userRoutes);
+app.use("/laporan", authenticate, laporanRoutes);
+
+app.use(errorHandler);
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
