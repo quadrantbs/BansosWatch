@@ -1,7 +1,7 @@
 # Bansos Watch - API Documentation
 
 ## Base URL
-`https://your-api-url.com`
+`https://bansoswatch.okattako.site/`
 
 ## Authentication
 Authentication is required for certain endpoints using JWT. You can get the token by logging in with the `POST /auth/login` endpoint.
