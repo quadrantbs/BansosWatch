@@ -5,15 +5,15 @@ const authenticate = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1]; 
 
   if (!token) {
-    return next(createAuthError('Token tidak ditemukan. Silakan login terlebih dahulu.'));
+    return next(createAuthError('Token not found. Please log in first.'));
   }
 
   try {
     const decoded = verifyToken(token);
-    req.user = decoded; 
+    req.user = decoded;
     next(); 
   } catch (err) {
-    return next(createAuthError('Token tidak valid atau telah kedaluwarsa.'));
+    return next(createAuthError('Invalid or expired token.'));
   }
 };
 
