@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
@@ -17,28 +17,8 @@ const reportRoutes = require("./routes/report");
 
 const { errorHandler } = require("./middlewares/errorHandler");
 const authenticate = require("./middlewares/auth");
-app.get("/", (req, res) => {
-  const filePath = path.join(__dirname, "API Docs.md");
-
-  fs.readFile(filePath, "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).send("Error reading the file");
-    }
-
-    const htmlContent = marked(data);
-
-    res.send(`
-      <html>
-        <head>
-          <title>Bansos Watch - API Docs</title>
-        </head>
-        <body>
-          <div>${htmlContent}</div>
-        </body>
-      </html>
-    `);
-  });
-});
+const apiDocs = require("./view/htmlContent");
+app.get("/", apiDocs);
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);

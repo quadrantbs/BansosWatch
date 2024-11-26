@@ -1,4 +1,4 @@
-# API Documentation
+# Bansos Watch - API Documentation
 
 ## Base URL
 `https://your-api-url.com`
@@ -377,6 +377,3 @@ Authentication is required for certain endpoints using JWT. You can get the toke
 - **403 Forbidden**: Insufficient permissions to perform the action.
 - **404 Not Found**: Resource not found.
 - **500 Internal Server Error**: Server-side errors.
-```
-
-Dokumentasi ini mencakup berbagai endpoint yang Anda butuhkan untuk **authentication**, **manajemen laporan**, dan **pengiriman email**. Anda dapat menyesuaikan URL base atau beberapa detail sesuai dengan implementasi API yang ada.
