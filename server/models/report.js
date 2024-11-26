@@ -7,8 +7,15 @@ const createReport = async (data) => {
   return result;
 };
 
-const getAllReports = async () => {
-  return await reportsCollection.find().toArray();
+const getAllReports = async (page, limit) => {
+  const skip = (page - 1) * limit;
+  const reports = await reportsCollection
+    .find({})
+    .skip(skip)
+    .limit(limit)
+    .toArray();
+  const totalDocuments = await reportsCollection.countDocuments();
+  return { reports, totalDocuments };
 };
 
 const getReportById = async (id) => {
@@ -20,27 +27,27 @@ const updateReportById = async (id, updatedData) => {
     { _id: new ObjectId(String(id)) },
     { $set: updatedData }
   );
-  return
+  return;
 };
 
 const updateReportStatusById = async (id, status) => {
-    await reportsCollection.updateOne(
-      { _id: new ObjectId(String(id)) },
-      { $set: { status } }
-    );
-  };
-  
-  const verifyReportById = async (id) => {
-    await updateReportStatusById(id, "approved");
-  };
-  
-  const rejectReportById = async (id) => {
-    await updateReportStatusById(id, "rejected");
-  };
+  await reportsCollection.updateOne(
+    { _id: new ObjectId(String(id)) },
+    { $set: { status }, $currentDate: { updatedAt: true } }
+  );
+};
+
+const verifyReportById = async (id) => {
+  await updateReportStatusById(id, "verified");
+};
+
+const rejectReportById = async (id) => {
+  await updateReportStatusById(id, "rejected");
+};
 
 const deleteReportById = async (id) => {
   await reportsCollection.deleteOne({ _id: new ObjectId(String(id)) });
-  return
+  return;
 };
 
 module.exports = {

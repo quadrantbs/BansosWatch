@@ -1,6 +1,7 @@
 const { createError } = require("../middlewares/errorHandler");
 const { hashPassword, verifyPassword } = require("../helpers/bcryptjs");
 const { db } = require("../config/db");
+const { ObjectId } = require("mongodb");
 
 const usersCollection = db.collection("users");
 const register = async (userData) => {
@@ -58,7 +59,12 @@ const login = async (credentials) => {
   return user;
 };
 
+const getUserById = async (id) => {
+  return await usersCollection.findOne({ _id: new ObjectId(String(id)) });
+};
+
 module.exports = {
   register,
   login,
+  getUserById,
 };

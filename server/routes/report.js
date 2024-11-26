@@ -1,20 +1,23 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const reportController = require('../controllers/reportController.js');
-const adminOnly = require('../middlewares/adminOnly.js');
+const reportController = require("../controllers/reportController.js");
+const adminOnly = require("../middlewares/adminOnly.js");
+const creatorPrivilage = require("../middlewares/creatorPrivilage.js");
 
-router.post('/', reportController.addReport);
+router.post("/", reportController.addReport);
 
-router.get('/', reportController.getAllReport);
+router.get("/", reportController.getAllReport);
 
-router.get('/:id', reportController.getOneReport);
+router.post("/send-mail", adminOnly, reportController.sendMail);
 
-router.put('/:id', reportController.updateReport);
+router.get("/:id", reportController.getOneReport);
 
-router.patch('/:id/approve', adminOnly, reportController.verifyReport);
+router.put("/:id", reportController.updateReport);
 
-router.patch('/:id/reject', adminOnly, reportController.rejectReport);
+router.delete("/:id", creatorPrivilage, reportController.deleteReport);
 
-router.delete('/:id', reportController.deleteReport);
+router.patch("/:id/verify", adminOnly, reportController.verifyReport);
+
+router.patch("/:id/reject", adminOnly, reportController.rejectReport);
 
 module.exports = router;

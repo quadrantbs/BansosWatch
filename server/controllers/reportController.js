@@ -1,5 +1,9 @@
 const { validateReport } = require("../helpers/validation");
-const { createNotFoundError } = require("../middlewares/errorHandler");
+const {
+  createNotFoundError,
+  createForbiddenError,
+  createError,
+} = require("../middlewares/errorHandler");
 const {
   createReport,
   getAllReports,
@@ -9,6 +13,7 @@ const {
   deleteReportById,
   rejectReportById,
 } = require("../models/report");
+const nodemailer = require("nodemailer");
 
 const addReport = async (req, res, next) => {
   try {
@@ -19,6 +24,9 @@ const addReport = async (req, res, next) => {
 
     const newReport = req.body;
     newReport.status = "pending";
+    newReport.createdAt = new Date();
+    newReport.updatedAt = new Date();
+    newReport.creatorId = req.user.data._id;
 
     await createReport(newReport);
     res.status(201).json({
@@ -33,14 +41,26 @@ const addReport = async (req, res, next) => {
 
 const getAllReport = async (req, res, next) => {
   try {
-    const reports = await getAllReports();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const data = await getAllReports(page, limit);
+    const reports = data.reports;
+    const totalDocuments = data.totalDocuments;
+
     res.status(200).json({
       success: true,
       message: "All reports successfully retrieved",
       data: reports,
+      meta: {
+        currentPage: page,
+        totalPages: Math.ceil(totalDocuments / limit),
+        totalDocuments,
+      },
     });
   } catch (error) {
     next(error);
+    console.log(error);
   }
 };
 
@@ -78,6 +98,7 @@ const updateReport = async (req, res, next) => {
     }
 
     const updatedData = req.body;
+    updatedData.updatedAt = new Date();
 
     await updateReportById(reportId, updatedData);
     report = await getReportById(reportId);
@@ -135,11 +156,61 @@ const deleteReport = async (req, res, next) => {
       return next(createNotFoundError(`Report with ID ${reportId} not found`));
     }
 
+    if (report.status === "verified") {
+      return next(
+        createForbiddenError(
+          `Cannot delete report with status ${report.status}`
+        )
+      );
+    }
+
     await deleteReportById(reportId);
 
     res.status(200).json({
       success: true,
       message: `Report with ID ${reportId} successfully deleted`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const sendMail = async (req, res, next) => {
+  try {
+    const { from, to, subject, message } = req.body;
+
+    if (!from || !to || !subject || !message) {
+      return next(
+        createError(
+          "Please provide all required fields: from, to, subject, and message",
+          400
+        )
+      );
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"BansosWatch" ${from}`,
+      to,
+      subject,
+      text: message,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Email sent successfully",
+      info,
     });
   } catch (error) {
     next(error);
@@ -154,4 +225,5 @@ module.exports = {
   verifyReport,
   rejectReport,
   deleteReport,
+  sendMail,
 };
