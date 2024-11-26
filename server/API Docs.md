@@ -342,7 +342,7 @@ Authentication is required for certain endpoints using JWT. You can get the toke
 
 ---
 
-### 11. **POST /send-email**
+### 11. **POST /reports/send-email**
 **Description**: Send an email.
 
 #### Request Body:
@@ -370,6 +370,40 @@ Authentication is required for certain endpoints using JWT. You can get the toke
 - **400 Bad Request**: Invalid email format or missing fields.
 
 ---
+
+### 12. **GET /reports/stats**
+**Description**: Retrieve statistical information about the distribution of aid, including the total number of reports, recipients grouped by program, and distribution details by region (province, city/district, and subdistrict).
+
+#### Response (Success):
+```json
+{
+  "success": true,
+  "message": "Report statistics successfully retrieved",
+  "data": {
+    "totalReports": 123,
+    "recipientsByProgram": {
+      "Food Distribution": 1500,
+      "Medical Aid": 500
+    },
+    "distributionByRegion": {
+      "Province A": {
+        "City A": {
+          "Subdistrict A": 10,
+          "Subdistrict B": 5
+        },
+        "City B": {
+          "Subdistrict C": 8
+        }
+      },
+      "Province B": {
+        "City C": {
+          "Subdistrict D": 20
+        }
+      }
+    }
+  }
+}
+```
 
 ## Error Codes
 - **400 Bad Request**: Invalid input data, missing required fields.
