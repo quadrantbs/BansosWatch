@@ -8,6 +8,8 @@ router.post("/", reportController.addReport);
 
 router.get("/", reportController.getAllReport);
 
+router.get("/stats", reportController.getStats);
+
 router.post("/send-mail", adminOnly, reportController.sendMail);
 
 router.get("/:id", reportController.getOneReport);

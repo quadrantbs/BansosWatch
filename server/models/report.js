@@ -50,6 +50,12 @@ const deleteReportById = async (id) => {
   return;
 };
 
+const getReportsForStats = async () => {
+  return await reportsCollection
+    .find({ status: "verified" })
+    .toArray();
+};
+
 module.exports = {
   createReport,
   getAllReports,
@@ -58,4 +64,5 @@ module.exports = {
   verifyReportById,
   rejectReportById,
   deleteReportById,
+  getReportsForStats,
 };

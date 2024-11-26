@@ -12,6 +12,7 @@ const {
   verifyReportById,
   deleteReportById,
   rejectReportById,
+  getReportsForStats,
 } = require("../models/report");
 const nodemailer = require("nodemailer");
 
@@ -217,6 +218,57 @@ const sendMail = async (req, res, next) => {
   }
 };
 
+const getStats = async (req, res, next) => {
+  try {
+    try {
+      const reports = await getReportsForStats();
+
+      const totalReports = reports.length;
+
+      const recipientsByProgram = reports.reduce((acc, report) => {
+        const program = report.program_name;
+        const recipients = report.recipients_count || 0;
+        acc[program] = (acc[program] || 0) + recipients;
+        return acc;
+      }, {});
+
+      const distributionByRegion = reports.reduce((acc, report) => {
+        const province = report.region.province || "Unknown Province";
+        const cityOrDistrict =
+          report.region.city_or_district || "Unknown City/District";
+        const subdistrict = report.region.subdistrict || "Unknown Subdistrict";
+
+        if (!acc[province]) {
+          acc[province] = {};
+        }
+
+        if (!acc[province][cityOrDistrict]) {
+          acc[province][cityOrDistrict] = {};
+        }
+
+        if (!acc[province][cityOrDistrict][subdistrict]) {
+          acc[province][cityOrDistrict][subdistrict] = 0;
+        }
+
+        acc[province][cityOrDistrict][subdistrict] += 1;
+
+        return acc;
+      }, {});
+
+      res.status(200).json({
+        success: true,
+        message: "Report statistics successfully retrieved",
+        data: { totalReports, recipientsByProgram, distributionByRegion },
+      });
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      throw new Error("Failed to fetch statistics.");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addReport,
   getAllReport,
@@ -226,4 +278,5 @@ module.exports = {
   rejectReport,
   deleteReport,
   sendMail,
+  getStats,
 };
