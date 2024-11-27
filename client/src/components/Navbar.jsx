@@ -77,12 +77,16 @@ function Navbar() {
             <li className="hover:bg-neutral hover:text-bg-neutral-content rounded-lg">
               <Link to="/reports/list">Reports List</Link>
             </li>
-            <li className="hover:bg-neutral hover:text-bg-neutral-content rounded-lg">
-              <Link to="/admin/verify">Verification Panel</Link>
-            </li>
-            <li className="hover:bg-neutral hover:text-bg-neutral-content rounded-lg">
-              <Link to="/admin/dashboard">Dashboard</Link>
-            </li>
+            {user?.role === "admin" && (
+              <>
+                <li className="hover:bg-neutral hover:text-bg-neutral-content rounded-lg">
+                  <Link to="/admin/verify">Verification Panel</Link>
+                </li>
+                <li className="hover:bg-neutral hover:text-bg-neutral-content rounded-lg">
+                  <Link to="/admin/dashboard">Dashboard</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
 
