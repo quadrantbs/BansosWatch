@@ -7,6 +7,7 @@ class CustomError extends Error {
 }
 
 const errorHandler = (err, req, res, next) => {
+  console.log(err)
   if (err.isJoi) {
     return res.status(400).json({
       success: false,

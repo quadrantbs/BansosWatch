@@ -18,16 +18,16 @@ const nodemailer = require("nodemailer");
 
 const addReport = async (req, res, next) => {
   try {
-    const { error } = validateReport(req.body);
-    if (error) {
-      return next(error);
-    }
-
     const newReport = req.body;
     newReport.status = "pending";
     newReport.createdAt = new Date();
     newReport.updatedAt = new Date();
     newReport.creatorId = req.user.data._id;
+
+    const { error } = validateReport(req.body);
+    if (error) {
+      return next(error);
+    }
 
     await createReport(newReport);
     res.status(201).json({
@@ -94,8 +94,25 @@ const updateReport = async (req, res, next) => {
     const reportId = req.params.id;
     let report = await getReportById(reportId);
 
+    if (
+      req.user.data._id !== report.creatorId &&
+      req.user.data.role !== "admin"
+    ) {
+      return next(
+        createForbiddenError("You are not authorized to delete this report")
+      );
+    }
+
     if (!report) {
       return next(createNotFoundError(`Report with ID ${reportId} not found`));
+    }
+
+    if (report.status === "verified") {
+      return next(
+        createForbiddenError(
+          `Cannot update report with status ${report.status}`
+        )
+      );
     }
 
     const updatedData = req.body;
@@ -152,6 +169,15 @@ const deleteReport = async (req, res, next) => {
   try {
     const reportId = req.params.id;
     const report = await getReportById(reportId);
+
+    if (
+      req.user.data._id !== report.creatorId &&
+      req.user.data.role !== "admin"
+    ) {
+      return next(
+        createForbiddenError("You are not authorized to delete this report")
+      );
+    }
 
     if (!report) {
       return next(createNotFoundError(`Report with ID ${reportId} not found`));

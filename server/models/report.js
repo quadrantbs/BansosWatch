@@ -23,6 +23,7 @@ const getReportById = async (id) => {
 };
 
 const updateReportById = async (id, updatedData) => {
+  delete updatedData._id;
   await reportsCollection.updateOne(
     { _id: new ObjectId(String(id)) },
     { $set: updatedData }

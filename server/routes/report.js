@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const reportController = require("../controllers/reportController.js");
 const adminOnly = require("../middlewares/adminOnly.js");
-const creatorPrivilage = require("../middlewares/creatorPrivilage.js");
 
 router.post("/", reportController.addReport);
 
@@ -16,7 +15,7 @@ router.get("/:id", reportController.getOneReport);
 
 router.put("/:id", reportController.updateReport);
 
-router.delete("/:id", creatorPrivilage, reportController.deleteReport);
+router.delete("/:id", reportController.deleteReport);
 
 router.patch("/:id/verify", adminOnly, reportController.verifyReport);
 

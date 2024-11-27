@@ -2,9 +2,18 @@ const Joi = require("joi");
 
 const validateReport = (data) => {
   const schema = Joi.object({
-    program_name: Joi.string().required().messages({
-      "any.required": "Program Name is required",
-    }),
+    program_name: Joi.string()
+      .valid(
+        "Program Keluarga Harapan (PKH)",
+        "Bantuan Pangan Non-Tunai (BPNT)",
+        "Bantuan Langsung Tunai (BLT)",
+        "Bantuan Pangan Beras",
+        "Program Indonesia Pintar (PIP)",
+        "Cadangan Beras Pemerintah (CBP)"
+      )
+      .messages({
+        "any.required": "Program Name is required",
+      }),
 
     recipients_count: Joi.number().integer().min(1).required().messages({
       "any.required": "Number of Recipients is required",
@@ -13,13 +22,22 @@ const validateReport = (data) => {
     }),
 
     region: Joi.object({
-      province: Joi.string()
+      province: Joi.object({
+        id: Joi.string().required(),
+        name: Joi.string().required(),
+      })
         .required()
         .messages({ "any.required": "Province is required" }),
-      city_or_district: Joi.string()
+      city_or_district: Joi.object({
+        id: Joi.string().required(),
+        name: Joi.string().required(),
+      })
         .required()
         .messages({ "any.required": "City/District is required" }),
-      subdistrict: Joi.string()
+      subdistrict: Joi.object({
+        id: Joi.string().required(),
+        name: Joi.string().required(),
+      })
         .required()
         .messages({ "any.required": "Sub-district is required" }),
     })
@@ -34,17 +52,19 @@ const validateReport = (data) => {
       "date.base": "Distribution Date must be a valid date",
     }),
 
-    proof_of_distribution: Joi.string()
-      .required()
-      .messages({
-        "any.required": "Proof of Distribution is required",
-      }),
+    proof_of_distribution: Joi.string().required().messages({
+      "any.required": "Proof of Distribution is required",
+    }),
 
     additional_notes: Joi.string().optional().allow(""),
     status: Joi.string().valid("pending", "verified", "rejected").messages({
       "any.required": "Status is required",
       "any.only": "Status must be either 'pending', 'verified', or 'rejected'",
     }),
+    createdAt: Joi.date().required(),
+    updatedAt: Joi.date().required(),
+    _id: Joi.string().optional().allow(""),
+    creatorId: Joi.string().required(),
   });
 
   return schema.validate(data, { abortEarly: false });
@@ -90,10 +110,10 @@ const validateUserLogin = (data) => {
   });
 
   return schema.validate(data, { abortEarly: false });
-}
+};
 
 module.exports = {
   validateReport,
   validateUserRegister,
-  validateUserLogin
+  validateUserLogin,
 };
