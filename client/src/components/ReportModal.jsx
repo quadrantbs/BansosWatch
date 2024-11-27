@@ -180,10 +180,19 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
 
   return (
     <div className="fixed overflow-y-auto inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-neutral max-h-[80%] overflow-y-auto p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-4">
-          {isEditing ? "Edit Report" : "Report Details"}
-        </h2>
+      <div className="bg-neutral text-neutral-content max-h-[80%] overflow-y-auto p-6 rounded-lg shadow-lg w-full max-w-2xl py-4">
+        <div className="flex flex-row-reverse justify-between mb-4">
+          <button
+            className="text-neutral-content hover:text-error"
+            onClick={handleClose}
+            aria-label="Close"
+          >
+            ✖
+          </button>
+          <h2 className="text-2xl font-bold">
+            {isEditing ? "Edit Report" : "Report Details"}
+          </h2>
+        </div>
         {loading ? (
           <Loading text="Updating report..." />
         ) : (
@@ -195,7 +204,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                   name="program_name"
                   value={form.program_name || ""}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full"
+                  className="select select-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                 >
                   <option value="">Select Program</option>
                   {programOptions.map((program, index) => (
@@ -220,7 +229,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                         name: e.target.options[e.target.selectedIndex].text,
                       })
                     }
-                    className="select select-bordered w-full"
+                    className="select select-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                   >
                     <option value="">Select Province</option>
                     {provinces.map((province) => (
@@ -237,7 +246,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                         name: e.target.options[e.target.selectedIndex].text,
                       })
                     }
-                    className="select select-bordered w-full"
+                    className="select select-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                   >
                     <option value="">Select City</option>
                     {cities.map((city) => (
@@ -254,7 +263,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                         name: e.target.options[e.target.selectedIndex].text,
                       })
                     }
-                    className="select select-bordered w-full"
+                    className="select select-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                   >
                     <option value="">Select Subdistrict</option>
                     {subdistricts.map((subdistrict) => (
@@ -276,7 +285,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                   name="recipients_count"
                   value={form.recipients_count || ""}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                 />
               ) : (
                 <p>{report.recipients_count}</p>
@@ -293,7 +302,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                   name="distribution_date"
                   value={form.distribution_date || ""}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                 />
               ) : (
                 <p>{report.distribution_date}</p>
@@ -309,7 +318,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                   name="additional_notes"
                   value={form.additional_notes || ""}
                   onChange={handleInputChange}
-                  className="textarea textarea-bordered w-full"
+                  className="textarea textarea-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                 />
               ) : (
                 <p>{report.additional_notes}</p>
@@ -356,7 +365,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                     type="file"
                     accept="image/*,application/pdf"
                     onChange={handleFileChange}
-                    className="file-input file-input-bordered w-full"
+                    className="file-input file-input-bordered w-full bg-neutral border border-neutral-content rounded-lg"
                   />
                 </div>
               ) : (
@@ -393,21 +402,21 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
               <p className="capitalize">{report.status}</p>
             </div>
             <div className="flex justify-between">
-              <button className="btn btn-error" onClick={handleClose}>
+              <button className="btn btn-error rounded-lg" onClick={handleClose}>
                 Close
               </button>
               {isEditing ? (
                 <div className="items-end space-x-2">
-                  <button className="btn btn-warning" onClick={handleCancel}>
+                  <button className="btn btn-warning rounded-lg" onClick={handleCancel}>
                     Cancel
                   </button>
-                  <button className="btn btn-success" onClick={handleUpdate}>
+                  <button className="btn btn-success rounded-lg" onClick={handleUpdate}>
                     Save
                   </button>
                 </div>
               ) : (
                 <button
-                  className="btn btn-warning"
+                  className="btn btn-warning rounded-lg"
                   disabled={report.status === "verified"}
                   onClick={handleEditToggle}
                 >

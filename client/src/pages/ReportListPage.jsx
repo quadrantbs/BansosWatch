@@ -15,6 +15,8 @@ const ReportListPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
 
   const fetchReports = async (page = 1) => {
     setLoading(true);
@@ -34,6 +36,22 @@ const ReportListPage = () => {
       toast.error(error.message || "Failed to fetch reports.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (report) => {
+    setReportToDelete(report);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!reportToDelete) return;
+    try {
+      await deleteReport(reportToDelete);
+      setIsConfirmOpen(false);
+      setReportToDelete(null);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -73,14 +91,16 @@ const ReportListPage = () => {
         onClose={handleCloseModal}
         onUpdate={() => fetchReports(currentPage)}
       />
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4 text-center">Reports List</h1>
+      <div className="p-1 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">
+          Reports List
+        </h1>
         {loading ? (
           <Loading text="Getting reports data..." />
         ) : (
           <>
             <div className="overflow-x-auto">
-              <table className="table-auto table-zebra w-full border-collapse border border-neutral mb-4 ">
+              <table className="text-xs sm:text-base table-auto table-zebra w-full border-collapse border border-neutral mb-4">
                 <thead>
                   <tr className="bg-primary text-primary-content">
                     <th className="px-4 py-2">Program Name</th>
@@ -97,24 +117,26 @@ const ReportListPage = () => {
                         {programNames[report.program_name] ||
                           report.program_name}
                       </td>
-                      <td className="px-4 py-2">{report.recipients_count}</td>
+                      <td className="px-4 py-2 text-center">
+                        {report.recipients_count}
+                      </td>
                       <td className="px-4 py-2">
                         {`${report.region.province.name}, ${report.region.city_or_district.name}, ${report.region.subdistrict.name}`}
                       </td>
-                      <td className="px-4 py-2 capitalize sm:table-cell hidden">
+                      <td className="px-4 py-2 capitalize sm:table-cell hidden text-center">
                         {report.status || "Pending"}
                       </td>
                       <td className="px-4 py-2 align-middle">
-                        <div className="mx-auto align-middle flex md:flex-row flex-col">
+                        <div className="flex justify-center md:flex-row flex-col">
                           <button
-                            className="btn btn-sm btn-info md:mr-2 md:mb-0 mb-2 mx-auto"
+                            className="btn btn-sm btn-info rounded-lg md:mr-2 md:mb-0 mb-2"
                             onClick={() => handleViewReport(report)}
                           >
                             View
                           </button>
                           <button
-                            className="btn btn-sm btn-error"
-                            onClick={() => deleteReport(report)}
+                            className="btn btn-sm btn-error rounded-lg"
+                            onClick={() => handleDeleteClick(report)}
                             disabled={report.status === "verified"}
                           >
                             Delete
@@ -126,20 +148,20 @@ const ReportListPage = () => {
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
               <button
                 disabled={currentPage === 1}
-                className="btn btn-secondary"
+                className="btn btn-secondary w-full sm:w-auto rounded-lg"
                 onClick={() => fetchReports(currentPage - 1)}
               >
                 Previous
               </button>
-              <p>
+              <p className="text-center sm:text-left">
                 Page {currentPage} of {totalPages}
               </p>
               <button
                 disabled={currentPage === totalPages}
-                className="btn btn-secondary"
+                className="btn btn-secondary w-full sm:w-auto rounded-lg"
                 onClick={() => fetchReports(currentPage + 1)}
               >
                 Next
@@ -148,6 +170,28 @@ const ReportListPage = () => {
           </>
         )}
       </div>
+      {isConfirmOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-neutral text-neutral-content">
+            <h3 className="font-bold text-lg">Confirm Deletion</h3>
+            <p>Are you sure you want to delete this report?</p>
+            <div className="modal-action">
+              <button
+                className="btn btn-error rounded-md"
+                onClick={handleConfirmDelete}
+              >
+                Yes, Delete
+              </button>
+              <button
+                className="btn btn-outline btn-warning rounded-md"
+                onClick={() => setIsConfirmOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

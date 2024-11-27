@@ -93,7 +93,7 @@ const AdminVerifyPage = () => {
       return (
         <embed
           src={url}
-          className="w-48 h-48 border sm:table-cell hidden"
+          className="w-48 h-48 border sm:table-cell hidden rounded-xl"
           type="application/pdf"
           title="Proof Preview"
         />
@@ -103,7 +103,7 @@ const AdminVerifyPage = () => {
       <img
         src={url}
         alt="Proof"
-        className="w-48 h-48 border object-cover sm:table-cell hidden"
+        className="w-48 h-48 border object-cover sm:table-cell hidden rounded-xl"
       />
     );
   };
@@ -162,7 +162,7 @@ const AdminVerifyPage = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4 text-center">
-        Admin Verify Reports
+        Verify Reports
       </h1>
       {loading && <Loading text="Loading reports..." />}
       {!loading && reports.length === 0 && (
@@ -171,93 +171,151 @@ const AdminVerifyPage = () => {
       {!loading && reports.length > 0 && (
         <div className="flex justify-center">
           <div className="w-full">
-            <div className="overflow-x-auto">
-              <table className="table-auto table-zebra mx-auto mb-4">
+            <div className="overflow-x-auto container">
+              {/* Table */}
+              <table className="hidden sm:table table-auto table-zebra w-full border-collapse border border-neutral mb-4 max-w-screen-lg">
                 <thead>
                   <tr className="bg-primary text-primary-content text-center">
-                    <th className="p-2">Program Name</th>
-                    <th className="p-2">Region</th>
-                    <th className="p-2 sm:table-cell hidden">Recipients</th>
-                    <th className="p-2 sm:table-cell hidden">
+                    <th className="px-4 py-2">Program Name</th>
+                    <th className="px-4 py-2">Region</th>
+                    <th className="px-4 py-2 sm:table-cell hidden">
+                      Recipients
+                    </th>
+                    <th className="px-4 py-2 sm:table-cell hidden">
                       Distribution Date
                     </th>
-                    <th className="p-2">Proof</th>
-                    <th className="p-2">Status</th>
-                    <th className="p-2">Actions</th>
+                    <th className="px-4 py-2">Proof</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {reports.map((report) => (
                     <tr key={report._id}>
-                      <td className="p-2">{report.program_name}</td>
-                      <td className="p-2">
-                        <div className="whitespace-normal break-words">
-                          {`${report.region.province?.name}, ${report.region.city_or_district?.name}, ${report.region.subdistrict?.name}`}
-                        </div>
+                      <td className="px-4 py-2">{report.program_name}</td>
+                      <td className="px-4 py-2">
+                        {`${report.region.province?.name}, ${report.region.city_or_district?.name}, ${report.region.subdistrict?.name}`}
                       </td>
-
-                      <td className="p-2 sm:table-cell hidden">
+                      <td className="px-4 py-2 text-center sm:table-cell hidden">
                         {report.recipients_count}
                       </td>
-                      <td className="p-2 sm:table-cell hidden">
+                      <td className="px-4 py-2 sm:table-cell hidden">
                         {report.distribution_date}
                       </td>
-                      <td className="p-2 sm:flex flex-col items-center align-middle table-cell">
-                        {handlePreview(report.proof_of_distribution)}
-                        <button
-                          onClick={() =>
-                            handleDownload(
-                              report.proof_of_distribution,
-                              report.program_name,
-                              report.region,
-                              report.recipients_count,
-                              report.distribution_date
-                            )
-                          }
-                          className="btn btn-secondary btn-sm sm:mt-2 my-auto"
-                        >
-                          Download
-                        </button>
-                      </td>
-                      <td className="p-2 capitalize text-center">
-                        {report.status}
-                      </td>
-                      <td className="px-4 py-2 align-middle">
-                        <div className="mx-auto align-middle flex md:flex-row flex-col">
+                      <td className="px-4 py-2">
+                        <div className="flex flex-col items-center">
+                          {handlePreview(report.proof_of_distribution)}
                           <button
-                            className="btn btn-sm btn-success md:mr-2 md:mb-0 mb-2 mx-auto"
-                            onClick={() => handleSelectApprove(report._id)}
-                            disabled={report.status !== "pending"}
+                            onClick={() =>
+                              handleDownload(
+                                report.proof_of_distribution,
+                                report.program_name,
+                                report.region,
+                                report.recipients_count,
+                                report.distribution_date
+                              )
+                            }
+                            className="btn btn-info btn-outline btn-sm rounded-lg mt-2"
                           >
-                            Approve
-                          </button>
-                          <button
-                            className="btn btn-sm btn-error"
-                            onClick={() => handleSelectReject(report._id)}
-                            disabled={report.status !== "pending"}
-                          >
-                            Reject
+                            Download Proof
                           </button>
                         </div>
+                      </td>
+                      <td className="px-4 py-2 capitalize text-center">
+                        {report.status}
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          className="btn btn-sm btn-success rounded-lg mb-2"
+                          onClick={() => handleSelectApprove(report._id)}
+                          disabled={report.status !== "pending"}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="btn btn-sm btn-error rounded-lg"
+                          onClick={() => handleSelectReject(report._id)}
+                          disabled={report.status !== "pending"}
+                        >
+                          Reject
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* Card */}
+              <div className="sm:hidden">
+                {reports.map((report) => (
+                  <div
+                    key={report._id}
+                    className="border border-primary rounded-lg shadow-md mb-4 p-4"
+                  >
+                    <h3 className="font-bold text-lg text-primary mb-2">
+                      {report.program_name}
+                    </h3>
+                    <p className="text-sm">
+                      <strong>Region:</strong>{" "}
+                      {`${report.region.province?.name}, ${report.region.city_or_district?.name}, ${report.region.subdistrict?.name}`}
+                    </p>
+                    <p className="text-sm">
+                      <strong>Recipients:</strong> {report.recipients_count}
+                    </p>
+                    <p className="text-sm">
+                      <strong>Distribution Date:</strong>{" "}
+                      {report.distribution_date}
+                    </p>
+                    <div className="flex justify-between items-center mt-2">
+                      <button
+                        onClick={() =>
+                          handleDownload(
+                            report.proof_of_distribution,
+                            report.program_name,
+                            report.region,
+                            report.recipients_count,
+                            report.distribution_date
+                          )
+                        }
+                        className="btn btn-info btn-outline btn-sm rounded-lg"
+                      >
+                        Download Proof
+                      </button>
+                      <span className="capitalize">{report.status}</span>
+                    </div>
+                    <div className="mt-4 flex justify-between">
+                      <button
+                        className="btn btn-sm btn-success rounded-lg"
+                        onClick={() => handleSelectApprove(report._id)}
+                        disabled={report.status !== "pending"}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="btn btn-sm btn-error rounded-lg"
+                        onClick={() => handleSelectReject(report._id)}
+                        disabled={report.status !== "pending"}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-between mt-4 w-[90%] mx-auto">
+            <div className="flex justify-between mt-4 w-[90%] mx-auto align-middle">
               <button
-                className="btn btn-secondary"
+                className="btn btn-secondary rounded-lg"
                 onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                 disabled={page === 1}
               >
-                Previous
+                Prev
               </button>
-              <span>
+              <span className="my-auto">
                 Page {page} of {totalPages}
               </span>
               <button
-                className="btn btn-secondary"
+                className="btn btn-secondary  rounded-lg"
                 onClick={() =>
                   setPage((prev) => Math.min(prev + 1, totalPages))
                 }

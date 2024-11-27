@@ -6,7 +6,7 @@ function AuthLayout() {
       <div className="text-center my-8">
         <h1 className="text-4xl font-bold">Bansos Watch</h1>
         <p className="text-md text-gray-600">
-          Sistem Monitoring dan Evaluasi Program Bantuan Sosial
+          Monitoring and Evaluation System for Social Assistance Programs
         </p>
       </div>
       <div className="container">

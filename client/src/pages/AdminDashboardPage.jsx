@@ -109,13 +109,13 @@ const AdminDashboardPage = () => {
       <h1 className="text-2xl font-bold text-center mb-6">Distribution Statistics</h1>
 
       {/* Total Reports */}
-      <div className="bg-primary text-primary-content p-4 rounded-lg mb-6 shadow-lg text-center">
+      <div className="bg-primary text-primary-content p-4 rounded-lg mb-6 shadow-2xl text-center">
         <h2 className="text-lg font-bold">Total Reports</h2>
         <p className="text-3xl font-semibold">{totalReports}</p>
       </div>
 
       {/* Recipients by Program - Pie Chart */}
-      <div className="bg-base-300 text-base-content p-4 rounded-lg mb-6 shadow-lg">
+      <div className="bg-base-300 text-base-content p-4 rounded-lg mb-6 shadow-2xl">
         <h2 className="text-lg font-bold text-center mb-4">
           Recipients by Program
         </h2>
@@ -123,7 +123,7 @@ const AdminDashboardPage = () => {
       </div>
 
       {/* Distribution by Region - Bar Chart */}
-      <div className="bg-base-300 text-base-content p-4 rounded-lg shadow-lg">
+      <div className="bg-base-300 text-base-content p-4 rounded-lg shadow-2xl">
         <h2 className="text-lg font-bold text-center mb-4">
           Distribution by Region
         </h2>

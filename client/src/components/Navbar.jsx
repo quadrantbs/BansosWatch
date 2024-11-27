@@ -19,8 +19,8 @@ function Navbar() {
   };
 
   return (
-    <>
-      <nav className="navbar bg-neutral text-neutral-content">
+    <div className="bg-neutral text-neutral-content flex">
+      <nav className="container navbar mx-auto max-w-screen-lg px-6">
         <div className="dropdown dropdown-bottom lg:hidden">
           <label tabIndex={0} className="btn btn-ghost">
             <svg
@@ -94,14 +94,14 @@ function Navbar() {
           <p className="sm:text-base text-xs mr-5">
             Logged in as: {user?.username}
           </p>
-          <button className="btn btn-error" onClick={logout}>
+          <button className="btn btn-error rounded-xl" onClick={logout}>
             Logout
           </button>
         </div>
       </nav>
 
       {loading && <Loading text="Logging out..." />}
-    </>
+    </div>
   );
 }
 
