@@ -6,6 +6,9 @@ import RootLayout from "./layouts/RootLayout";
 import { getCookies, tokenCookiesName, userCookiesName } from "./utils/cookies";
 import HomePage from "./pages/HomePage";
 import ReportListPage from "./pages/ReportListPage";
+import ReportFormPage from "./pages/ReportFormPage";
+import AdminVerifyPage from "./pages/AdminVerifyPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +49,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/reports/form",
-        element: <HomePage />,
+        element: <ReportFormPage />,
       },
       {
         path: "/reports/list",
@@ -70,11 +73,11 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "verify",
-        element: <HomePage />,
+        element: <AdminVerifyPage />,
       },
       {
         path: "dashboard",
-        element: <HomePage />,
+        element: <AdminDashboardPage />,
       },
     ],
   },

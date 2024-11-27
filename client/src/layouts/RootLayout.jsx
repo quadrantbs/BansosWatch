@@ -20,7 +20,7 @@ function RootLayout() {
       />
       <Navbar />
       <main className="min-h-screen flex w-full">
-        <div className="mx-auto">
+        <div className="mx-auto flex">
           <Outlet />
         </div>
       </main>

@@ -134,8 +134,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
       }
       delete form.temp_proof_of_distribution;
       delete form.proof_of_distribution_file;
-
-      console.log(form);
+      form.status = "pending";
 
       const updatedForm = {
         ...form,
@@ -149,6 +148,7 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
       toast.success("Report updated successfully.");
       onUpdate();
       onClose();
+      setIsEditing(false);
     } catch (error) {
       console.error("Error updating report:", error);
       toast.error(error.error || "Failed to update report.");
@@ -343,13 +343,13 @@ const ReportModal = ({ report, isOpen, onClose, onUpdate }) => {
                     <iframe
                       src={form.proof_of_distribution}
                       title="Current Proof of Distribution"
-                      className="w-full h-96 border rounded-lg mb-4"
+                      className="w-full h-96 border rounded-lg mb-4 mx-auto"
                     ></iframe>
                   ) : (
                     <img
                       src={form.proof_of_distribution}
                       alt="Current Proof of Distribution"
-                      className="max-w-full h-auto rounded-lg mb-4"
+                      className="max-w-full h-auto rounded-lg mb-4 mx-auto"
                     />
                   )}
                   <input

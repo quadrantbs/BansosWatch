@@ -23,6 +23,7 @@ const addReport = async (req, res, next) => {
     newReport.createdAt = new Date();
     newReport.updatedAt = new Date();
     newReport.creatorId = req.user.data._id;
+    newReport.recipients_count = Number(newReport.recipients_count);
 
     const { error } = validateReport(req.body);
     if (error) {
@@ -151,8 +152,13 @@ const verifyReport = async (req, res, next) => {
 const rejectReport = async (req, res, next) => {
   try {
     const reportId = req.params.id;
+    const { additional_notes } = req.body;
 
-    await rejectReportById(reportId);
+    if (!additional_notes || !additional_notes.trim()) {
+      next(createError("Please provide additional notes", 400));
+    }
+
+    await rejectReportById(reportId, additional_notes);
     const report = await getReportById(reportId);
 
     res.status(200).json({
@@ -259,10 +265,11 @@ const getStats = async (req, res, next) => {
       }, {});
 
       const distributionByRegion = reports.reduce((acc, report) => {
-        const province = report.region.province || "Unknown Province";
+        const province = report.region.province.name || "Unknown Province";
         const cityOrDistrict =
-          report.region.city_or_district || "Unknown City/District";
-        const subdistrict = report.region.subdistrict || "Unknown Subdistrict";
+          report.region.city_or_district.name || "Unknown City/District";
+        const subdistrict =
+          report.region.subdistrict.name || "Unknown Subdistrict";
 
         if (!acc[province]) {
           acc[province] = {};

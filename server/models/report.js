@@ -42,8 +42,14 @@ const verifyReportById = async (id) => {
   await updateReportStatusById(id, "verified");
 };
 
-const rejectReportById = async (id) => {
+const rejectReportById = async (id, additional_notes) => {
   await updateReportStatusById(id, "rejected");
+  const report = await getReportById(id);
+  const updatedNotes = report.additional_notes
+    ? `${report.additional_notes}\n ${additional_notes}`
+    : ` ${additional_notes}`;
+  report.additional_notes = updatedNotes;
+  await updateReportById(id, report);
 };
 
 const deleteReportById = async (id) => {
@@ -52,9 +58,7 @@ const deleteReportById = async (id) => {
 };
 
 const getReportsForStats = async () => {
-  return await reportsCollection
-    .find({ status: "verified" })
-    .toArray();
+  return await reportsCollection.find({ status: "verified" }).toArray();
 };
 
 module.exports = {
